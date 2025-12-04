@@ -1,4 +1,3 @@
-import ui from '@nuxt/ui/vite';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
@@ -8,7 +7,6 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig({
   plugins: [
     vue(),
-    ui(),
     tailwindcss(),
     VitePWA({
       registerType: 'prompt',
@@ -38,12 +36,12 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  server: {
-    host: '0.0.0.0',
-    port: 5173,
-    hmr: {
-      host: 'velellidous-anya-sprawly.ngrok-free.dev',
-      protocol: 'wss',
-    },
-  },
+  // server: {
+  //   host: '0.0.0.0',
+  //   port: 5173,
+  //   hmr: {
+  //     host: 'velellidous-anya-sprawly.ngrok-free.dev',
+  //     protocol: 'wss',
+  //   },
+  // },
 });
