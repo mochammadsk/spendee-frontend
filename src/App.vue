@@ -1,7 +1,11 @@
-<script setup></script>
-
 <template>
-  <UApp>
+  <div class="min-h-screen">
     <RouterView />
-  </UApp>
+  </div>
 </template>
+
+<script setup>
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+</script>
