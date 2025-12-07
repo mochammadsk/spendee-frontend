@@ -36,12 +36,13 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  // server: {
-  //   host: '0.0.0.0',
-  //   port: 5173,
-  //   hmr: {
-  //     host: 'velellidous-anya-sprawly.ngrok-free.dev',
-  //     protocol: 'wss',
-  //   },
-  // },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://spendee-api.vercel.app',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 });
