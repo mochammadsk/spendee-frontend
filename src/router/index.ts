@@ -1,3 +1,4 @@
+import Dashboard from '@/views/Dashboard.vue';
 import SignIn from '@/views/SignIn.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -11,6 +12,12 @@ const routes = [
     name: 'signin',
     component: SignIn,
     meta: { title: 'SignIn' },
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard,
+    meta: { title: 'Dashboard' },
   },
 ];
 
