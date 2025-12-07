@@ -1,6 +1,10 @@
 <script setup>
 import Button from '@/components/Button.vue';
+import axios from 'axios';
 import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const form = reactive({
   email: '',
@@ -11,6 +15,7 @@ const form = reactive({
 const errors = reactive({
   email: '',
   password: '',
+  general: '',
 });
 
 const submitting = ref(false);
@@ -19,11 +24,9 @@ const showPassword = ref(false);
 function validate() {
   errors.email = '';
   errors.password = '';
+  errors.general = '';
 
-  if (!form.email) errors.email = 'Email wajib diisi.';
-  else if (!/^\S+@\S+\.\S+$/.test(form.email))
-    errors.email = 'Format email tidak valid.';
-
+  if (!form.email) errors.email = 'Email / Username wajib diisi.';
   if (!form.password) errors.password = 'Password wajib diisi.';
   else if (form.password.length < 6)
     errors.password = 'Password minimal 6 karakter.';
@@ -37,23 +40,35 @@ function togglePassword() {
 
 async function onSubmit() {
   if (!validate()) return;
-  submitting.value = true;
 
-  // Simulasi request: ganti dengan fetch/axios ke API Anda
+  submitting.value = true;
+  errors.general = '';
+
   try {
-    await new Promise((r) => setTimeout(r, 900));
-    // contoh: const res = await fetch('/api/auth/login', { method: 'POST', body: JSON.stringify(form) })
-    // handle token, redirect, dsb.
-    alert('Berhasil sign in (simulasi).');
+    const payload = {
+      identifier: form.email,
+      password: form.password,
+    };
+
+    const res = await axios.post('/api/auth/signin', payload);
+    const { token, data } = res.data;
+
+    router.push({ name: 'dashboard' });
   } catch (err) {
-    alert('Terjadi kesalahan. Coba lagi.');
+    if (err.response) {
+      const status = err.response.status;
+
+      if (status === 400) errors.general = 'Field wajib diisi.';
+      else if (status === 401)
+        errors.general = 'Email/Username atau password salah.';
+      else if (status === 403) errors.general = 'Akun belum terverifikasi.';
+      else errors.general = 'Terjadi kesalahan, coba lagi nanti.';
+    } else {
+      errors.general = 'Tidak dapat terhubung ke server.';
+    }
   } finally {
     submitting.value = false;
   }
-}
-
-function onOAuth(provider) {
-  alert(`OAuth: ${provider} (simulasi)`);
 }
 </script>
 
@@ -83,12 +98,11 @@ function onOAuth(provider) {
             <input
               id="email"
               name="email"
-              type="email"
               autocomplete="email"
               required
               v-model.trim="form.email"
               class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="you@example.com"
+              placeholder="Email or Username"
             />
             <p v-if="errors.email" class="mt-1 text-xs text-red-600">
               {{ errors.email }}
@@ -147,14 +161,17 @@ function onOAuth(provider) {
         </div>
 
         <div>
-          <Button variant="primary"> Login </Button>
+          <Button variant="primary" type="submit" :disabled="submitting">
+            <span v-if="!submitting">Login</span>
+            <span v-else>Processing...</span></Button
+          >
         </div>
       </form>
 
       <p class="text-center text-sm text-gray-500">
         Don't have an account?
         <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"
-          >Sign up</a
+          >Sign Up</a
         >
       </p>
     </div>
