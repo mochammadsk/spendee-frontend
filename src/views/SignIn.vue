@@ -1,6 +1,8 @@
 <script setup>
 import Button from '@/components/Button.vue';
-import axios from 'axios';
+import Spinner from '@/components/Spinner.vue';
+import api from '@/lib/api';
+import { Eye, EyeOff } from 'lucide-vue-next';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -50,7 +52,7 @@ async function onSubmit() {
       password: form.password,
     };
 
-    const res = await axios.post('/api/auth/signin', payload);
+    const res = await api.post('/auth/signin', payload);
     const { token, data } = res.data;
 
     router.push({ name: 'dashboard' });
@@ -125,11 +127,17 @@ async function onSubmit() {
               <button
                 type="button"
                 @click="togglePassword"
-                class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                class="absolute inset-y-0 right-0 pr-3 flex cursor-pointer outline-none items-center"
+                aria-label="Toggle password visibility"
               >
-                <span class="text-gray-500">{{
-                  showPassword ? 'Hide' : 'Show'
-                }}</span>
+                <Eye
+                  v-if="!showPassword"
+                  class="w-5 h-5 text-gray-500 hover:text-gray-700 transition"
+                />
+                <EyeOff
+                  v-else
+                  class="w-5 h-5 text-gray-500 hover:text-gray-700 transition"
+                />
               </button>
             </div>
             <p v-if="errors.password" class="mt-1 text-xs text-red-600">
@@ -163,8 +171,11 @@ async function onSubmit() {
         <div>
           <Button variant="primary" type="submit" :disabled="submitting">
             <span v-if="!submitting">Login</span>
-            <span v-else>Processing...</span></Button
-          >
+            <span v-else class="flex items-center gap-2">
+              <Spinner size="sm" variant="light" />
+              Processing...
+            </span>
+          </Button>
         </div>
       </form>
 
