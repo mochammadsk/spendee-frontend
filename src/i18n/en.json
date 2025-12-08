@@ -1,0 +1,17 @@
+{
+  "auth": {
+    "title": "Sign In",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "login": "Login",
+    "noAccount": "Don't have an account?",
+    "register": "Register",
+    "forgotPassword": "Forgot password?",
+    "description": "Manage your finances more easily, safely, and in a structured way."
+  },
+  "toast": {
+    "successLogin": "Login Successful",
+    "successLogout": "Logout Successful"
+  }
+}
