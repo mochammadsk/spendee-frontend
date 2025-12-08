@@ -3,13 +3,19 @@ import Button from '@/components/Button.vue';
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toast-notification';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const toast = useToast();
 
 const handleLogout = async () => {
   try {
     await api.post('/auth/signout');
+    toast.success('Logout berhasil.', {
+      position: 'top',
+      duration: 2500,
+    });
   } catch (error) {
     console.error('Logout error:', error);
   } finally {

@@ -2,26 +2,30 @@
 import Button from '@/components/Button.vue';
 import Spinner from '@/components/Spinner.vue';
 import api from '@/lib/api';
-import { Eye, EyeOff } from 'lucide-vue-next';
-import { reactive, ref } from 'vue';
+import { ChevronDown, Eye, EyeOff, Globe } from 'lucide-vue-next';
+import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toast-notification';
 
 const router = useRouter();
+const toast = useToast();
+const { locale, t } = useI18n();
 
+const langDropdown = ref(null);
+const showLangMenu = ref(false);
+const showPassword = ref(false);
+const submitting = ref(false);
 const form = reactive({
   email: '',
   password: '',
   remember: false,
 });
-
 const errors = reactive({
   email: '',
   password: '',
   general: '',
 });
-
-const submitting = ref(false);
-const showPassword = ref(false);
 
 function validate() {
   errors.email = '';
@@ -36,9 +40,30 @@ function validate() {
   return !errors.email && !errors.password;
 }
 
+// toggle password
 function togglePassword() {
   showPassword.value = !showPassword.value;
 }
+
+// language menu
+function changeLang(lang) {
+  locale.value = lang;
+  localStorage.setItem('locale', lang);
+  showLangMenu.value = false;
+}
+
+// handle click outside
+function handleClickOutside(e) {
+  if (langDropdown.value && !langDropdown.value.contains(e.target)) {
+    showLangMenu.value = false;
+  }
+}
+onMounted(() => {
+  window.addEventListener('click', handleClickOutside);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener('click', handleClickOutside);
+});
 
 async function onSubmit() {
   if (!validate()) return;
@@ -55,6 +80,11 @@ async function onSubmit() {
     const res = await api.post('/auth/signin', payload);
     const { token, data } = res.data;
 
+    toast.success(t('toast.successLogin'), {
+      position: 'top',
+      duration: 2500,
+    });
+
     router.push({ name: 'dashboard' });
   } catch (err) {
     if (err.response) {
@@ -68,6 +98,11 @@ async function onSubmit() {
     } else {
       errors.general = 'Tidak dapat terhubung ke server.';
     }
+
+    toast.error(errors.general, {
+      position: 'top',
+      duration: 2500,
+    });
   } finally {
     submitting.value = false;
   }
@@ -75,116 +110,149 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div
-    class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
-  >
-    <div class="max-w-md w-full space-y-8">
-      <img
-        class="mx-auto h-24 w-auto"
-        src="/public/icons/icon.png"
-        alt="Logo"
-      />
+  <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-gray-50">
+    <!-- Left Side -->
+    <div
+      class="hidden lg:flex flex-col items-center justify-center bg-indigo-600 text-white px-12"
+    >
+      <img src="/icons/icon.png" class="w-56 mb-8" alt="Logo" />
+      <h1 class="text-4xl font-bold mb-3">Spendeefy</h1>
+      <p class="text-indigo-200 text-center max-w-sm">
+        {{ $t('auth.description') }}
+      </p>
+    </div>
 
-      <form
-        class="mt-8 space-y-6 bg-white p-6 rounded-2xl shadow-sm"
-        @submit.prevent="onSubmit"
-      >
-        <div>
-          <h2 class="text-center text-3xl font-bold text-gray-900">SignIn</h2>
+    <!-- Right Side -->
+    <div class="flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div class="w-full max-w-md space-y-6">
+        <!-- Header Mobile -->
+        <div class="text-center lg:hidden">
+          <img src="/icons/icon.png" class="mx-auto h-20 mb-4" />
+          <h2 class="text-3xl font-semibold text-gray-900">Spendeefy</h2>
         </div>
-        <input type="hidden" name="remember" :value="form.remember" />
 
-        <div class="rounded-md shadow-sm -space-y-px">
-          <div class="mb-4">
-            <label for="email" class="sr-only">Email address</label>
-            <input
-              id="email"
-              name="email"
-              autocomplete="email"
-              required
-              v-model.trim="form.email"
-              class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Email or Username"
-            />
-            <p v-if="errors.email" class="mt-1 text-xs text-red-600">
-              {{ errors.email }}
-            </p>
-          </div>
+        <!-- Login Card -->
+        <div class="bg-white p-8 rounded-2xl shadow">
+          <h2 class="text-2xl font-semibold text-gray-900 text-center mb-6">
+            {{ $t('auth.login') }}
+          </h2>
 
-          <div>
-            <label for="password" class="sr-only">Password</label>
-            <div class="relative">
+          <form class="space-y-5" @submit.prevent="onSubmit">
+            <input type="hidden" name="remember" :value="form.remember" />
+
+            <!-- Email -->
+            <div>
               <input
-                :type="showPassword ? 'text' : 'password'"
-                id="password"
-                name="password"
-                autocomplete="current-password"
-                required
-                v-model="form.password"
-                class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Password"
+                v-model.trim="form.email"
+                type="text"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                placeholder="Email or Username"
               />
+              <p v-if="errors.email" class="mt-1 text-xs text-red-500">
+                {{ errors.email }}
+              </p>
+            </div>
+
+            <!-- Password -->
+            <div>
+              <div class="relative">
+                <input
+                  :type="showPassword ? 'text' : 'password'"
+                  v-model="form.password"
+                  class="w-full px-4 py-2 border rounded-lg focus:outline-none pr-10"
+                  placeholder="Password"
+                />
+                <button
+                  type="button"
+                  @click="togglePassword"
+                  class="absolute inset-y-0 right-3 flex items-center"
+                >
+                  <Eye v-if="!showPassword" class="w-5 h-5 text-gray-500" />
+                  <EyeOff v-else class="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+              <p v-if="errors.password" class="mt-1 text-xs text-red-500">
+                {{ errors.password }}
+              </p>
+            </div>
+
+            <!-- Remember + Forgot -->
+            <div class="flex items-center justify-between text-sm">
+              <label class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  v-model="form.remember"
+                  class="rounded border-gray-300 text-indigo-600"
+                />
+                {{ $t('auth.rememberMe') }}
+              </label>
+
+              <a href="#" class="text-indigo-600 hover:underline">
+                {{ $t('auth.forgotPassword') }}
+              </a>
+            </div>
+
+            <!-- Button -->
+            <Button variant="primary" type="submit" :disabled="submitting">
+              <span v-if="!submitting">{{ $t('auth.login') }}</span>
+              <span v-else class="flex items-center gap-2">
+                <Spinner size="sm" variant="light" />
+                Processing...
+              </span>
+            </Button>
+          </form>
+        </div>
+
+        <!-- Register -->
+        <p class="text-center text-sm text-gray-600">
+          {{ $t('auth.noAccount') }}
+          <a href="#" class="text-indigo-600 font-medium hover:underline">
+            {{ $t('auth.register') }}
+          </a>
+        </p>
+
+        <!-- Language Switch -->
+        <div class="flex justify-center">
+          <div class="relative w-40" ref="langDropdown">
+            <!-- Button -->
+            <button
+              type="button"
+              @click.stop="showLangMenu = !showLangMenu"
+              class="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-gray-500 border-b border-gray-300 cursor-pointer"
+            >
+              <div class="flex items-center gap-2">
+                <Globe class="w-4 h-4" />
+                <span>{{ locale === 'id' ? 'Indonesia' : 'English' }}</span>
+              </div>
+              <ChevronDown
+                class="w-4 h-4 transition-transform"
+                :class="showLangMenu ? 'rotate-180' : ''"
+              />
+            </button>
+
+            <!-- Dropdown -->
+            <div
+              v-if="showLangMenu"
+              class="absolute z-20 top-full mt-2 w-full rounded-lg bg-white shadow overflow-hidden"
+            >
               <button
                 type="button"
-                @click="togglePassword"
-                class="absolute inset-y-0 right-0 pr-3 flex cursor-pointer outline-none items-center"
-                aria-label="Toggle password visibility"
+                @click="changeLang('id')"
+                class="w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
               >
-                <Eye
-                  v-if="!showPassword"
-                  class="w-5 h-5 text-gray-500 hover:text-gray-700 transition"
-                />
-                <EyeOff
-                  v-else
-                  class="w-5 h-5 text-gray-500 hover:text-gray-700 transition"
-                />
+                Indonesia
+              </button>
+              <button
+                type="button"
+                @click="changeLang('en')"
+                class="w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
+              >
+                English
               </button>
             </div>
-            <p v-if="errors.password" class="mt-1 text-xs text-red-600">
-              {{ errors.password }}
-            </p>
           </div>
         </div>
-
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <input
-              id="remember_me"
-              type="checkbox"
-              v-model="form.remember"
-              class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-            />
-            <label for="remember_me" class="ml-2 block text-sm text-gray-900"
-              >Remember me</label
-            >
-          </div>
-
-          <div class="text-sm">
-            <a
-              href="#"
-              class="font-medium text-indigo-600 hover:text-indigo-500"
-              >Forgot your password?</a
-            >
-          </div>
-        </div>
-
-        <div>
-          <Button variant="primary" type="submit" :disabled="submitting">
-            <span v-if="!submitting">Login</span>
-            <span v-else class="flex items-center gap-2">
-              <Spinner size="sm" variant="light" />
-              Processing...
-            </span>
-          </Button>
-        </div>
-      </form>
-
-      <p class="text-center text-sm text-gray-500">
-        Don't have an account?
-        <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"
-          >Sign Up</a
-        >
-      </p>
+      </div>
     </div>
   </div>
 </template>

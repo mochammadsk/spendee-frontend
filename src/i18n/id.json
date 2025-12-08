@@ -1,0 +1,17 @@
+{
+  "auth": {
+    "title": "Masuk",
+    "email": "Email",
+    "password": "Kata sandi",
+    "rememberMe": "Ingat saya",
+    "login": "Masuk",
+    "noAccount": "Belum punya akun?",
+    "register": "Daftar",
+    "forgotPassword": "Lupa kata sandi?",
+    "description": "Kelola keuangan lebih mudah, aman, dan terstruktur."
+  },
+  "toast": {
+    "successLogin": "Berhasil Masuk",
+    "successLogout": "Berhasil Keluar"
+  }
+}
