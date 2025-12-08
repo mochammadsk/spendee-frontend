@@ -1,6 +1,6 @@
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
-import path from 'path';
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
@@ -14,16 +14,10 @@ export default defineConfig({
       manifest: {
         name: 'Spendee App',
         short_name: 'Spendee',
-        description: 'Simple money manager aplication',
         theme_color: '#ffffff',
         icons: [
           {
-            src: 'icons/pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: 'icons/pwa-512x512.png',
+            src: 'icons/icon.png',
             sizes: '512x512',
             type: 'image/png',
           },
@@ -33,7 +27,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': resolve(__dirname, './src'),
     },
   },
 });

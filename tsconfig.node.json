@@ -6,9 +6,6 @@
     "module": "ESNext",
     "types": ["node"],
     "skipLibCheck": true,
-    "paths": {
-      "#build/ui": ["./node_modules/.nuxt-ui/ui"]
-    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",

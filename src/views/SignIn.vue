@@ -81,7 +81,7 @@ async function onSubmit() {
     <div class="max-w-md w-full space-y-8">
       <img
         class="mx-auto h-24 w-auto"
-        src="/public/icons/pwa-512x512.png"
+        src="/public/icons/icon.png"
         alt="Logo"
       />
 
