@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import instance from '@/lib/api';
+import api from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
 import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
@@ -15,7 +15,7 @@ const authStore = useAuthStore();
 
 onMounted(async () => {
   try {
-    const res = await instance.get('/auth/keep-signed-in');
+    const res = await api.get('/auth/keep-signed-in');
     if (res.data.success) {
       authStore.setUser(res.data.user);
       authStore.setAuthenticated(true);
