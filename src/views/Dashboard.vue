@@ -1,10 +1,21 @@
 <script setup lang="ts">
 import Button from '@/components/Button.vue';
+import api from '@/lib/api';
+import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const goBack = () => {
-  router.back();
+const authStore = useAuthStore();
+
+const handleLogout = async () => {
+  try {
+    await api.post('/auth/signout');
+  } catch (error) {
+    console.error('Logout error:', error);
+  } finally {
+    authStore.logout();
+    router.replace('/signin');
+  }
 };
 </script>
 
@@ -29,7 +40,7 @@ const goBack = () => {
       </p>
 
       <div class="mt-4 w-full">
-        <Button type="button" @click="goBack">Kembali</Button>
+        <Button type="button" @click="handleLogout">Kembali</Button>
       </div>
 
       <p class="text-[11px] text-slate-400 mt-2">
