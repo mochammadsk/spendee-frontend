@@ -1,7 +1,7 @@
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
-import Dashboard from '@/views/Dashboard.vue';
-import SignIn from '@/views/SignIn.vue';
+import SignIn from '@/views/auth/SignIn.vue';
+import Dashboard from '@/views/main/Dashboard.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
