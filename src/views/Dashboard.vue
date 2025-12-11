@@ -26,12 +26,12 @@ const handleLogout = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-slate-100 px-4">
+  <div class="flex min-h-screen items-center justify-center bg-slate-100 px-4">
     <div
-      class="max-w-md w-full bg-white rounded-2xl shadow-md px-6 py-8 flex flex-col items-center text-center space-y-4"
+      class="flex w-full max-w-md flex-col items-center space-y-4 rounded-2xl bg-white px-6 py-8 text-center shadow-md"
     >
       <div
-        class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-3xl"
+        class="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-3xl"
       >
         🛠️
       </div>
@@ -49,7 +49,7 @@ const handleLogout = async () => {
         <Button type="button" @click="handleLogout">Kembali</Button>
       </div>
 
-      <p class="text-[11px] text-slate-400 mt-2">
+      <p class="mt-2 text-[11px] text-slate-400">
         Status:
         <span class="font-medium text-amber-500">Tahap Pengembangan</span>
       </p>

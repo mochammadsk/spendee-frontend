@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://spendee-api.vercel.app/api',
+  // baseURL: 'https://spendee-api.vercel.app/api',
+  baseURL: 'http://localhost:3000/api',
   withCredentials: true,
   timeout: 10000,
 });

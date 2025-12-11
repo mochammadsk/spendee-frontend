@@ -1,5 +1,19 @@
+<template>
+  <button
+    :type="type"
+    :disabled="disabled"
+    :class="[
+      'flex w-full cursor-pointer justify-center rounded-md font-medium duration-300 hover:scale-[1.02] focus:outline-none active:scale-95 disabled:opacity-50',
+      variantClasses[variant],
+      sizeClasses[size],
+    ]"
+  >
+    <slot />
+  </button>
+</template>
+
 <script setup>
-const props = defineProps({
+defineProps({
   type: {
     type: String,
     default: 'button',
@@ -32,17 +46,3 @@ const sizeClasses = {
   lg: 'py-3 px-5 text-base',
 };
 </script>
-
-<template>
-  <button
-    :type="type"
-    :disabled="disabled"
-    :class="[
-      'rounded-md font-medium focus:outline-none disabled:opacity-50 cursor-pointer w-full flex justify-center active:scale-95 duration-300 hover:scale-[1.02]',
-      variantClasses[variant],
-      sizeClasses[size],
-    ]"
-  >
-    <slot />
-  </button>
-</template>
