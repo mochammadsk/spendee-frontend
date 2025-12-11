@@ -1,3 +1,151 @@
+<template>
+  <div class="grid min-h-screen grid-cols-1 bg-gray-50 lg:grid-cols-2">
+    <!-- Left Side -->
+    <div
+      class="hidden flex-col items-center justify-center bg-indigo-600 px-12 text-white lg:flex"
+    >
+      <img src="/icons/icon.png" class="mb-8 w-56" alt="Logo" />
+      <h1 class="mb-3 text-4xl font-bold">Spendeefy</h1>
+      <p class="max-w-sm text-center text-indigo-200">
+        {{ $t('auth.description') }}
+      </p>
+    </div>
+
+    <!-- Right Side -->
+    <div class="flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div class="w-full max-w-md space-y-6">
+        <!-- Header Mobile -->
+        <div class="text-center lg:hidden">
+          <img src="/icons/icon.png" class="mx-auto mb-4 h-20" />
+          <h2 class="text-3xl font-semibold text-gray-900">Spendeefy</h2>
+        </div>
+
+        <!-- Login Card -->
+        <div class="rounded-2xl bg-white p-8 shadow">
+          <h2 class="mb-6 text-center text-2xl font-semibold text-gray-900">
+            {{ $t('auth.login') }}
+          </h2>
+
+          <form class="space-y-5" @submit.prevent="onSubmit">
+            <input type="hidden" name="remember" :value="form.remember" />
+
+            <!-- Email -->
+            <div>
+              <input
+                v-model.trim="form.email"
+                type="text"
+                class="w-full rounded-lg border px-4 py-2 focus:outline-none"
+                placeholder="Email or Username"
+              />
+              <p v-if="errors.email" class="mt-1 text-xs text-red-500">
+                {{ errors.email }}
+              </p>
+            </div>
+
+            <!-- Password -->
+            <div>
+              <div class="relative">
+                <input
+                  :type="showPassword ? 'text' : 'password'"
+                  v-model="form.password"
+                  class="w-full rounded-lg border px-4 py-2 pr-10 focus:outline-none"
+                  placeholder="Password"
+                />
+                <button
+                  type="button"
+                  @click="togglePassword"
+                  class="absolute inset-y-0 right-3 flex items-center"
+                >
+                  <Eye v-if="!showPassword" class="h-5 w-5 text-gray-500" />
+                  <EyeOff v-else class="h-5 w-5 text-gray-500" />
+                </button>
+              </div>
+              <p v-if="errors.password" class="mt-1 text-xs text-red-500">
+                {{ errors.password }}
+              </p>
+            </div>
+
+            <!-- Remember + Forgot -->
+            <div class="flex items-center justify-between text-sm">
+              <label class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  v-model="form.remember"
+                  class="rounded border-gray-300 text-indigo-600"
+                />
+                {{ $t('auth.rememberMe') }}
+              </label>
+
+              <a href="#" class="text-indigo-600 hover:underline">
+                {{ $t('auth.forgotPassword') }}
+              </a>
+            </div>
+
+            <!-- Button -->
+            <Button variant="primary" type="submit" :disabled="submitting">
+              <span v-if="!submitting">{{ $t('auth.login') }}</span>
+              <span v-else class="flex items-center gap-2">
+                <Spinner size="sm" variant="light" />
+                Processing...
+              </span>
+            </Button>
+          </form>
+        </div>
+
+        <!-- Register -->
+        <p class="text-center text-sm text-gray-600">
+          {{ $t('auth.noAccount') }}
+          <a href="#" class="font-medium text-indigo-600 hover:underline">
+            {{ $t('auth.register') }}
+          </a>
+        </p>
+
+        <!-- Language Switch -->
+        <div class="flex justify-center">
+          <div class="relative w-40" ref="langDropdown">
+            <!-- Button -->
+            <button
+              type="button"
+              @click.stop="showLangMenu = !showLangMenu"
+              class="flex w-full cursor-pointer items-center justify-between gap-2 border-b border-gray-300 px-3 py-2 text-sm text-gray-500"
+            >
+              <div class="flex items-center gap-2">
+                <Globe class="h-4 w-4" />
+                <span>{{ locale === 'id' ? 'Indonesia' : 'English' }}</span>
+              </div>
+              <ChevronDown
+                class="h-4 w-4 transition-transform"
+                :class="showLangMenu ? 'rotate-180' : ''"
+              />
+            </button>
+
+            <!-- Dropdown -->
+            <div
+              v-if="showLangMenu"
+              class="absolute top-full z-20 mt-2 w-full overflow-hidden rounded-lg bg-white shadow"
+            >
+              <button
+                type="button"
+                @click="changeLang('id')"
+                class="w-full cursor-pointer px-4 py-2 text-left hover:bg-gray-100"
+              >
+                Indonesia
+              </button>
+              <button
+                type="button"
+                @click="changeLang('en')"
+                class="w-full cursor-pointer px-4 py-2 text-left hover:bg-gray-100"
+              >
+                English
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import Button from '@/components/Button.vue';
 import Spinner from '@/components/Spinner.vue';
@@ -108,151 +256,3 @@ async function onSubmit() {
   }
 }
 </script>
-
-<template>
-  <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-gray-50">
-    <!-- Left Side -->
-    <div
-      class="hidden lg:flex flex-col items-center justify-center bg-indigo-600 text-white px-12"
-    >
-      <img src="/icons/icon.png" class="w-56 mb-8" alt="Logo" />
-      <h1 class="text-4xl font-bold mb-3">Spendeefy</h1>
-      <p class="text-indigo-200 text-center max-w-sm">
-        {{ $t('auth.description') }}
-      </p>
-    </div>
-
-    <!-- Right Side -->
-    <div class="flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div class="w-full max-w-md space-y-6">
-        <!-- Header Mobile -->
-        <div class="text-center lg:hidden">
-          <img src="/icons/icon.png" class="mx-auto h-20 mb-4" />
-          <h2 class="text-3xl font-semibold text-gray-900">Spendeefy</h2>
-        </div>
-
-        <!-- Login Card -->
-        <div class="bg-white p-8 rounded-2xl shadow">
-          <h2 class="text-2xl font-semibold text-gray-900 text-center mb-6">
-            {{ $t('auth.login') }}
-          </h2>
-
-          <form class="space-y-5" @submit.prevent="onSubmit">
-            <input type="hidden" name="remember" :value="form.remember" />
-
-            <!-- Email -->
-            <div>
-              <input
-                v-model.trim="form.email"
-                type="text"
-                class="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                placeholder="Email or Username"
-              />
-              <p v-if="errors.email" class="mt-1 text-xs text-red-500">
-                {{ errors.email }}
-              </p>
-            </div>
-
-            <!-- Password -->
-            <div>
-              <div class="relative">
-                <input
-                  :type="showPassword ? 'text' : 'password'"
-                  v-model="form.password"
-                  class="w-full px-4 py-2 border rounded-lg focus:outline-none pr-10"
-                  placeholder="Password"
-                />
-                <button
-                  type="button"
-                  @click="togglePassword"
-                  class="absolute inset-y-0 right-3 flex items-center"
-                >
-                  <Eye v-if="!showPassword" class="w-5 h-5 text-gray-500" />
-                  <EyeOff v-else class="w-5 h-5 text-gray-500" />
-                </button>
-              </div>
-              <p v-if="errors.password" class="mt-1 text-xs text-red-500">
-                {{ errors.password }}
-              </p>
-            </div>
-
-            <!-- Remember + Forgot -->
-            <div class="flex items-center justify-between text-sm">
-              <label class="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  v-model="form.remember"
-                  class="rounded border-gray-300 text-indigo-600"
-                />
-                {{ $t('auth.rememberMe') }}
-              </label>
-
-              <a href="#" class="text-indigo-600 hover:underline">
-                {{ $t('auth.forgotPassword') }}
-              </a>
-            </div>
-
-            <!-- Button -->
-            <Button variant="primary" type="submit" :disabled="submitting">
-              <span v-if="!submitting">{{ $t('auth.login') }}</span>
-              <span v-else class="flex items-center gap-2">
-                <Spinner size="sm" variant="light" />
-                Processing...
-              </span>
-            </Button>
-          </form>
-        </div>
-
-        <!-- Register -->
-        <p class="text-center text-sm text-gray-600">
-          {{ $t('auth.noAccount') }}
-          <a href="#" class="text-indigo-600 font-medium hover:underline">
-            {{ $t('auth.register') }}
-          </a>
-        </p>
-
-        <!-- Language Switch -->
-        <div class="flex justify-center">
-          <div class="relative w-40" ref="langDropdown">
-            <!-- Button -->
-            <button
-              type="button"
-              @click.stop="showLangMenu = !showLangMenu"
-              class="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-gray-500 border-b border-gray-300 cursor-pointer"
-            >
-              <div class="flex items-center gap-2">
-                <Globe class="w-4 h-4" />
-                <span>{{ locale === 'id' ? 'Indonesia' : 'English' }}</span>
-              </div>
-              <ChevronDown
-                class="w-4 h-4 transition-transform"
-                :class="showLangMenu ? 'rotate-180' : ''"
-              />
-            </button>
-
-            <!-- Dropdown -->
-            <div
-              v-if="showLangMenu"
-              class="absolute z-20 top-full mt-2 w-full rounded-lg bg-white shadow overflow-hidden"
-            >
-              <button
-                type="button"
-                @click="changeLang('id')"
-                class="w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
-              >
-                Indonesia
-              </button>
-              <button
-                type="button"
-                @click="changeLang('en')"
-                class="w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
-              >
-                English
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>

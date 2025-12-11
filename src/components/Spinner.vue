@@ -1,5 +1,15 @@
+<template>
+  <span
+    :class="[
+      'inline-block animate-spin rounded-full border-2 border-t-transparent',
+      sizeClasses[size],
+      colorClasses[variant],
+    ]"
+  />
+</template>
+
 <script setup>
-const props = defineProps({
+defineProps({
   size: {
     type: String,
     default: 'md',
@@ -22,13 +32,3 @@ const colorClasses = {
   primary: 'border-indigo-600',
 };
 </script>
-
-<template>
-  <span
-    :class="[
-      'inline-block rounded-full border-2 border-t-transparent animate-spin',
-      sizeClasses[size],
-      colorClasses[variant],
-    ]"
-  />
-</template>
