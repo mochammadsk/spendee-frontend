@@ -13,7 +13,6 @@
       "
     >
       <House class="h-6 w-6" />
-      <span class="text-xs">Dashboard</span>
     </button>
 
     <!-- Wallet -->
@@ -25,21 +24,20 @@
       "
     >
       <Wallet class="h-6 w-6" />
-      <span class="text-xs">Wallet</span>
     </button>
 
     <div
       class="pointer-events-none absolute inset-0 flex items-center justify-center"
     >
-      <div class="h-18.5 w-18.5 -translate-y-5 rounded-full bg-gray-200"></div>
+      <div class="h-16.5 w-16.5 -translate-y-5 rounded-full bg-gray-300"></div>
     </div>
 
     <!-- Center Add / Toggle -->
     <button
       @click="toggle"
-      class="relative z-10 -mt-10 flex h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-blue-600 text-white shadow-xl transition active:scale-95"
+      class="relative z-10 -mt-10 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-blue-600 text-white shadow-xl transition active:scale-95"
     >
-      <component :is="isOpen ? X : Plus" class="h-7 w-7" />
+      <component :is="isOpen ? X : Plus" class="h-6 w-6" />
     </button>
 
     <!-- Activity -->
@@ -51,7 +49,6 @@
       "
     >
       <History class="h-6 w-6" />
-      <span class="text-xs">Activity</span>
     </button>
 
     <!-- Menu/Profile -->
@@ -62,28 +59,26 @@
         active === 'menu' ? 'font-semibold text-blue-600' : 'text-slate-600'
       "
     >
-      <Menu class="h-6 w-6" />
-      <span class="text-xs">Menu</span>
+      <Settings class="h-6 w-6" />
     </button>
   </nav>
 </template>
 
 <script setup>
-import { History, House, Menu, Plus, Wallet, X } from 'lucide-vue-next'
-import { defineEmits, defineProps } from 'vue'
+import { History, House, Plus, Settings, Wallet, X } from 'lucide-vue-next';
 
-const props = defineProps({
+defineProps({
   active: { type: String, default: 'dashboard' },
   isOpen: { type: Boolean, default: false },
-})
+});
 
-const emit = defineEmits(['toogle', 'navigate'])
+const emit = defineEmits(['toogle', 'navigate']);
 
 function navigate(page) {
-  emit('navigate', page)
+  emit('navigate', page);
 }
 
 function toggle() {
-  emit('toogle')
+  emit('toogle');
 }
 </script>
