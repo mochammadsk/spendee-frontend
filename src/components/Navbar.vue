@@ -64,7 +64,7 @@
   </nav>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { History, House, Plus, Settings, Wallet, X } from 'lucide-vue-next';
 
 defineProps({
@@ -74,7 +74,7 @@ defineProps({
 
 const emit = defineEmits(['toogle', 'navigate']);
 
-function navigate(page) {
+function navigate(page: string) {
   emit('navigate', page);
 }
 

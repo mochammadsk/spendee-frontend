@@ -4,7 +4,7 @@
     <div
       class="hidden flex-col items-center justify-center bg-indigo-600 px-12 text-white lg:flex"
     >
-      <img src="/icons/icon.png" class="mb-8 w-56" alt="Logo" />
+      <img src="/icons/icon.webp" class="mb-8 w-56" alt="Logo" />
       <h1 class="mb-3 text-4xl font-bold">Spendeefy</h1>
       <p class="max-w-sm text-center text-indigo-200">
         {{ $t('auth.description') }}
@@ -16,7 +16,7 @@
       <div class="w-full max-w-md space-y-6">
         <!-- Header Mobile -->
         <div class="text-center lg:hidden">
-          <img src="/icons/icon.png" class="mx-auto mb-4 h-20" />
+          <img src="/icons/icon.webp" class="mx-auto mb-4 h-20" />
           <h2 class="text-3xl font-semibold text-gray-900">Spendeefy</h2>
         </div>
 
@@ -146,10 +146,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Button from '@/components/Button.vue';
 import Spinner from '@/components/Spinner.vue';
 import api from '@/lib/api';
+import { useAuthStore } from '@/stores/auth';
 import { ChevronDown, Eye, EyeOff, Globe } from 'lucide-vue-next';
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -159,8 +160,9 @@ import { useToast } from 'vue-toast-notification';
 const router = useRouter();
 const toast = useToast();
 const { locale, t } = useI18n();
+const authStore = useAuthStore();
 
-const langDropdown = ref(null);
+const langDropdown = ref<HTMLElement | null>(null);
 const showLangMenu = ref(false);
 const showPassword = ref(false);
 const submitting = ref(false);
@@ -194,18 +196,20 @@ function togglePassword() {
 }
 
 // language menu
-function changeLang(lang) {
+function changeLang(lang: string) {
   locale.value = lang;
   localStorage.setItem('locale', lang);
   showLangMenu.value = false;
 }
 
 // handle click outside
-function handleClickOutside(e) {
-  if (langDropdown.value && !langDropdown.value.contains(e.target)) {
+function handleClickOutside(e: MouseEvent) {
+  const target = e.target as Node;
+  if (langDropdown.value && !langDropdown.value.contains(target)) {
     showLangMenu.value = false;
   }
 }
+
 onMounted(() => {
   window.addEventListener('click', handleClickOutside);
 });
@@ -226,7 +230,9 @@ async function onSubmit() {
     };
 
     const res = await api.post('/auth/signin', payload);
-    const { token, data } = res.data;
+    const { data } = res.data;
+
+    authStore.setUser(data);
 
     toast.success(t('toast.successLogin'), {
       position: 'top',
@@ -234,7 +240,7 @@ async function onSubmit() {
     });
 
     router.push({ name: 'dashboard' });
-  } catch (err) {
+  } catch (err: any) {
     if (err.response) {
       const status = err.response.status;
 

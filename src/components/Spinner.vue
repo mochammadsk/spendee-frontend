@@ -8,14 +8,14 @@
   />
 </template>
 
-<script setup>
-defineProps({
+<script setup lang="ts">
+const props = defineProps({
   size: {
-    type: String,
+    type: String as () => 'sm' | 'md' | 'lg',
     default: 'md',
   },
   variant: {
-    type: String,
+    type: String as () => 'light' | 'dark' | 'primary',
     default: 'light',
   },
 });

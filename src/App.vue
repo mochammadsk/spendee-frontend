@@ -1,18 +1,13 @@
 <template>
-  <div class="min-h-screen">
-    <RouterView />
-  </div>
+  <RouterView />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
 import { onMounted } from 'vue';
-import { useRoute } from 'vue-router';
 
-const route = useRoute();
 const authStore = useAuthStore();
-
 onMounted(async () => {
   try {
     const res = await api.get('/auth/keep-signed-in');

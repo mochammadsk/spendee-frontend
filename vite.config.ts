@@ -17,9 +17,9 @@ export default defineConfig({
         theme_color: '#ffffff',
         icons: [
           {
-            src: 'icons/icon.png',
+            src: 'icons/icon.webp',
             sizes: '512x512',
-            type: 'image/png',
+            type: 'image/webp',
           },
         ],
       },
