@@ -12,7 +12,7 @@
 
       <main
         :class="[
-          'flex-1 bg-gray-50 transition-all duration-300',
+          'flex-1 transition-all duration-300',
           isSidebarCollapsed ? 'lg:ml-0' : 'lg:ml-0',
         ]"
       >
@@ -32,9 +32,9 @@
 </template>
 
 <script setup lang="ts">
-import Header from '@/components/Header.vue';
-import Navbar from '@/components/Navbar.vue';
-import Sidebar from '@/components/Sidebar.vue';
+import Header from '@/components/main/Header.vue';
+import Navbar from '@/components/main/Navbar.vue';
+import Sidebar from '@/components/main/Sidebar.vue';
 import { ref } from 'vue';
 
 const current = ref('dashboard');
