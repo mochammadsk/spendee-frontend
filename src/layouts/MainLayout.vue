@@ -1,30 +1,47 @@
 <template id="main-layout">
-  <main class="mx-auto min-h-screen w-full flex-1 bg-gray-300">
-    <Header />
-    <slot />
-  </main>
-  <Navbar
-    :active="current"
-    :isOpen="isOpen"
-    @toogle="isOpen = !isOpen"
-    @navigate="onNav"
-  />
+  <div class="flex min-h-screen flex-col">
+    <Header :collapsed="isSidebarCollapsed" />
+
+    <div class="flex flex-1 overflow-hidden">
+      <Sidebar
+        :active="current"
+        v-model:isCollapsed="isSidebarCollapsed"
+        @navigate="onNav"
+        class="hidden lg:block"
+      />
+
+      <main
+        :class="[
+          'flex-1 bg-gray-50 transition-all duration-300',
+          isSidebarCollapsed ? 'lg:ml-0' : 'lg:ml-0',
+        ]"
+      >
+        <slot />
+      </main>
+    </div>
+
+    <!-- Mobile Navbar -->
+    <Navbar
+      :active="current"
+      :isOpen="isOpen"
+      @toogle="isOpen = !isOpen"
+      @navigate="onNav"
+      class="lg:hidden"
+    />
+  </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Header from '@/components/Header.vue';
 import Navbar from '@/components/Navbar.vue';
+import Sidebar from '@/components/Sidebar.vue';
 import { ref } from 'vue';
 
 const current = ref('dashboard');
+const isSidebarCollapsed = ref(false);
 const isOpen = ref(false);
 
-defineProps({
-  title: { type: String, default: '' },
-});
-
-function onNav(page) {
+function onNav(page: string) {
   current.value = page;
 }
-function openAdd() {}
 </script>
