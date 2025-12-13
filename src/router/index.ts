@@ -1,7 +1,5 @@
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
-import SignIn from '@/views/auth/SignIn.vue';
-import Dashboard from '@/views/main/Dashboard.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -10,9 +8,18 @@ const routes = [
     redirect: '/signin',
   },
   {
+    path: '/signup',
+    name: 'signup',
+    component: () => import('@/views/auth/SignUp.vue'),
+    meta: {
+      title: 'SignUp',
+      guestOnly: true,
+    },
+  },
+  {
     path: '/signin',
     name: 'signin',
-    component: SignIn,
+    component: () => import('@/views/auth/SignIn.vue'),
     meta: {
       title: 'SignIn',
       guestOnly: true,
@@ -21,7 +28,7 @@ const routes = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: Dashboard,
+    component: () => import('@/views/main/Dashboard.vue'),
     meta: {
       title: 'Dashboard',
       requiresAuth: true,
