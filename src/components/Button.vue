@@ -12,10 +12,10 @@
   </button>
 </template>
 
-<script setup>
-defineProps({
+<script setup lang="ts">
+const props = defineProps({
   type: {
-    type: String,
+    type: String as () => 'button' | 'submit' | 'reset',
     default: 'button',
   },
   disabled: {
@@ -23,11 +23,16 @@ defineProps({
     default: false,
   },
   variant: {
-    type: String,
+    type: String as () =>
+      | 'primary'
+      | 'secondary'
+      | 'success'
+      | 'danger'
+      | 'neutral',
     default: 'primary',
   },
   size: {
-    type: String,
+    type: String as () => 'sm' | 'md' | 'lg',
     default: 'md',
   },
 });
