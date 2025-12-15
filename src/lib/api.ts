@@ -2,8 +2,7 @@ import axios from 'axios';
 import { useToast } from 'vue-toast-notification';
 
 const api = axios.create({
-  // baseURL: 'https://spendee-api.vercel.app/api',
-  baseURL: 'http://localhost:3000/api',
+  baseURL: 'https://spendee-api.vercel.app/api',
   withCredentials: true,
   timeout: 30000,
 });
