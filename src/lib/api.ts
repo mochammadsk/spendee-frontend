@@ -2,9 +2,10 @@ import axios from 'axios';
 import { useToast } from 'vue-toast-notification';
 
 const api = axios.create({
-  baseURL: 'https://spendee-api.vercel.app/api',
+  // baseURL: 'https://spendee-api.vercel.app/api',
+  baseURL: 'http://localhost:3000/api',
   withCredentials: true,
-  timeout: 15000,
+  timeout: 30000,
 });
 
 // Interceptors
@@ -18,7 +19,7 @@ api.interceptors.response.use(
         duration: 2500,
       });
     } else {
-      //
+      // Nothing
     }
     return Promise.reject(err);
   },
